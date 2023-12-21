@@ -78,7 +78,9 @@ static GS::Optional<GS::UniString>	GetLocationOfHotlink (const API_Guid& hotlink
 	API_HotlinkNode hotlinkNode = {};
 	hotlinkNode.guid = hotlinkGuid;
 
-	ACAPI_Database (APIDb_GetHotlinkNodeID, &hotlinkNode);
+	//ACAPI_Database (APIDb_GetHotlinkNodeID, &hotlinkNode);
+	bool enableUnplaced = true;
+	ACAPI_Hotlink_GetHotlinkNode (&hotlinkNode, &enableUnplaced);
 
 	if (hotlinkNode.sourceLocation == nullptr) {
 		return GS::NoValue;
@@ -117,9 +119,12 @@ GS::ObjectState	GetHotlinksCommand::Execute (const GS::ObjectState& /*parameters
 
 	for (API_HotlinkTypeID type : {APIHotlink_Module, APIHotlink_XRef}) {
 		API_Guid hotlinkRootNodeGuid = APINULLGuid;
-		if (ACAPI_Database (APIDb_GetHotlinkRootNodeGuidID, &type, &hotlinkRootNodeGuid) == NoError) {
+		
+		if (ACAPI_Hotlink_GetHotlinkRootNodeGuid (&type, &hotlinkRootNodeGuid) == NoError) {
+		// if (ACAPI_Database (APIDb_GetHotlinkRootNodeGuidID, &type, &hotlinkRootNodeGuid) == NoError) {
 			GS::HashTable<API_Guid, GS::Array<API_Guid>> hotlinkTree;
-			if (ACAPI_Database (APIDb_GetHotlinkNodeTreeID, &hotlinkRootNodeGuid, &hotlinkTree) == NoError) {
+			if (ACAPI_Hotlink_GetHotlinkNodeTree (&hotlinkRootNodeGuid, &hotlinkTree) == NoError) {
+			// if (ACAPI_Database (APIDb_GetHotlinkNodeTreeID, &hotlinkRootNodeGuid, &hotlinkTree) == NoError) {
 				for (const API_Guid& childNodeGuid : hotlinkTree.Retrieve (hotlinkRootNodeGuid)) {
 					listAdder (DumpHotlinkWithChildren (childNodeGuid, hotlinkTree));
 				}

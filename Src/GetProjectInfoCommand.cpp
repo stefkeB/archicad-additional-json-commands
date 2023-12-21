@@ -58,7 +58,8 @@ IsUntitledResponseField, IsTeamworkResponseField);
 GS::ObjectState	GetProjectInfoCommand::Execute (const GS::ObjectState& /*parameters*/, GS::ProcessControl& /*processControl*/) const
 {
 	API_ProjectInfo projectInfo = {};
-	GSErrCode err = ACAPI_Environment (APIEnv_ProjectID, &projectInfo);
+	// GSErrCode err = ACAPI_Environment (APIEnv_ProjectID, &projectInfo);
+	GSErrCode err = ACAPI_ProjectOperation_Project (&projectInfo);
 
 	if (err != NoError) {
 		return CreateErrorResponse (APIERR_NOPLAN, "Failed to retrieve project information. Check the opened project!");

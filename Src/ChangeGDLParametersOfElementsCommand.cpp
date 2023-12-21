@@ -10,12 +10,12 @@ GS::String ChangeGDLParametersOfElementsCommand::GetName () const
 
 constexpr const char* GDLParametersDictionarySchemaName = "GDLParametersDictionary";
 constexpr const char* GDLParameterDetailsSchemaName = "GDLParameterDetails";
-constexpr const char* ParameterTypeFieldName = "type";
+// constexpr const char* ParameterTypeFieldName = "type";
 constexpr const char* ParameterIndex1FieldName = "index1";
 constexpr const char* ParameterIndex2FieldName = "index2";
 constexpr const char* ParameterValueFieldName = "value";
-constexpr const char* AttributeIndexFieldName = "index";
-constexpr const char* AttributeNameFieldName = "name";
+// constexpr const char* AttributeIndexFieldName = "index";
+// constexpr const char* AttributeNameFieldName = "name";
 
 
 GS::Optional<GS::UniString> ChangeGDLParametersOfElementsCommand::GetSchemaDefinitions () const
@@ -183,10 +183,12 @@ GS::ObjectState	ChangeGDLParametersOfElementsCommand::Execute (const GS::ObjectS
 #endif
 			paramOwner.guid   = elemGuid;
 
-			err = ACAPI_Goodies (APIAny_OpenParametersID, &paramOwner);
+			// err = ACAPI_Goodies (APIAny_OpenParametersID, &paramOwner);
+			err = ACAPI_LibraryPart_OpenParameters (&paramOwner);
 			if (err == NoError) {
 				API_GetParamsType getParams = {};
-				err = ACAPI_Goodies (APIAny_GetActParametersID, &getParams);
+				err = ACAPI_LibraryPart_GetActParameters (&getParams);
+				// err = ACAPI_Goodies (APIAny_GetActParametersID, &getParams);
 				if (err == NoError) {
 					const GSSize nParams = BMGetHandleSize ((GSHandle) getParams.params) / sizeof (API_AddParType);
 					GS::HashTable<GS::String, API_AddParID> gdlParametersTypeDictionary;
@@ -246,7 +248,8 @@ GS::ObjectState	ChangeGDLParametersOfElementsCommand::Execute (const GS::ObjectS
 								break;
 						}
 
-						err = ACAPI_Goodies (APIAny_ChangeAParameterID, &changeParam);
+						// err = ACAPI_Goodies (APIAny_ChangeAParameterID, &changeParam);
+						err = ACAPI_LibraryPart_ChangeAParameter(&changeParam);
 						if (err != NoError) {
 							notAbleToChangeParameter = true;
 							badParameterName = parameterName;
@@ -254,7 +257,8 @@ GS::ObjectState	ChangeGDLParametersOfElementsCommand::Execute (const GS::ObjectS
 						}
 
 						ACAPI_DisposeAddParHdl (&getParams.params);
-						ACAPI_Goodies (APIAny_GetActParametersID, &getParams);
+						// ACAPI_Goodies (APIAny_GetActParametersID, &getParams);
+						ACAPI_LibraryPart_GetActParameters (&getParams);
 					}
 
 					API_Element	element = {};
@@ -300,7 +304,8 @@ GS::ObjectState	ChangeGDLParametersOfElementsCommand::Execute (const GS::ObjectS
 					}
 				}
 
-				ACAPI_Goodies (APIAny_CloseParametersID);
+				// ACAPI_Goodies (APIAny_CloseParametersID);
+				ACAPI_LibraryPart_CloseParameters ();
 				ACAPI_DisposeAddParHdl (&getParams.params);
 			}
 		}

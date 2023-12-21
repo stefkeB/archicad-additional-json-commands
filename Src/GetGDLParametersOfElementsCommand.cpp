@@ -226,14 +226,16 @@ static void AddValueAttribute (GS::ObjectState& 	 gdlParameterDetails,
 	if (actParam.typeMod == API_ParSimple) {
 		gdlParameterDetails.Add (ParameterValueFieldName,
 								 GetAttributeObjectState (ConvertAddParIDToAttrTypeID (actParam.typeID),
-														  static_cast<API_AttributeIndex> (actParam.value.real)));
+														  //static_cast<API_AttributeIndex> (actParam.value.real)));
+														  ACAPI_CreateAttributeIndex(actParam.value.real)));
 	} else {
 		const auto& arrayValueItemAdder = gdlParameterDetails.AddList<GS::ObjectState> (ParameterValueFieldName);
 		Int32 arrayIndex = 0;
 		for (Int32 i1 = 1; i1 <= actParam.dim1; i1++) {
 			for (Int32 i2 = 1; i2 <= actParam.dim2; i2++) {
 				arrayValueItemAdder (GetAttributeObjectState (ConvertAddParIDToAttrTypeID (actParam.typeID),
-														      static_cast<API_AttributeIndex> (((double*)*actParam.value.array) [arrayIndex++])));
+														      // static_cast<API_AttributeIndex> (((double*)*actParam.value.array) [arrayIndex++])));
+															  ACAPI_CreateAttributeIndex (((double*)*actParam.value.array) [arrayIndex++])));
 			}
 		}
 	}

@@ -82,7 +82,8 @@ GS::Array<GS::Pair<short, double>> GetStoryLevels ()
 	GS::Array<GS::Pair<short, double>> storyLevels;
 	API_StoryInfo storyInfo = {};
 
-	GSErrCode err = ACAPI_Environment (APIEnv_GetStorySettingsID, &storyInfo);
+	// GSErrCode err = ACAPI_Environment (APIEnv_GetStorySettingsID, &storyInfo);
+	GSErrCode err = ACAPI_ProjectSetting_GetStorySettings (&storyInfo);
 	if (err == NoError) {
 		const short numberOfStories = storyInfo.lastStory - storyInfo.firstStory + 1;
 		for (short i = 0; i < numberOfStories; ++i) {
